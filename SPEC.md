@@ -34,4 +34,4 @@ Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transc
 
 - Microsoft may change Teams/Stream transcript DOM attributes.
 - Very long transcripts can take time because scrolling waits for virtualized rendering.
-- Managed browser policy may block Tampermonkey or clipboard access.
+- Browser or managed-device policy may block Tampermonkey, require extension developer mode, require an explicit "allow user scripts" toggle, or block clipboard access.

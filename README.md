@@ -7,8 +7,10 @@ The script does not call private APIs, inspect cookies, read browser storage, re
 ## Install
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
-2. Open the raw userscript URL: [teams-transcript-extractor.user.js](https://raw.githubusercontent.com/sichgeis/teams-transcript-extractor/main/teams-transcript-extractor.user.js).
-3. Tampermonkey should offer to install it. Confirm the installation.
+2. In the browser extensions settings, enable developer mode if your browser requires it for userscript extensions.
+3. Open the Tampermonkey extension settings and enable the toggle that allows user scripts to run.
+4. Open the raw userscript URL: [teams-transcript-extractor.user.js](https://raw.githubusercontent.com/sichgeis/teams-transcript-extractor/main/teams-transcript-extractor.user.js).
+5. Tampermonkey should offer to install it. Confirm the installation.
 
 If Tampermonkey does not open automatically, create a new script in the Tampermonkey dashboard and paste in the contents of [`teams-transcript-extractor.user.js`](./teams-transcript-extractor.user.js).
 
@@ -40,6 +42,7 @@ The userscript currently matches:
 
 - The transcript DOM must be present in the page or openable through a visible Transcript button.
 - If no panel appears at all, the current page URL is probably not matched by the userscript or Tampermonkey is not running on that site.
+- If the page URL is supported but no panel appears, check that browser extension developer mode is enabled and Tampermonkey is allowed to run user scripts.
 - Teams and Stream use virtualized lists, so extraction can take a little while for long transcripts.
 - If Microsoft changes the transcript DOM shape, selectors may need to be adjusted.
 - Local transcript copies may still be governed by company or meeting policy. Use this only for transcripts you are allowed to access and retain.
