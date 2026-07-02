@@ -6,8 +6,11 @@
 // @author       Christian
 // @match        https://*.sharepoint.com/*
 // @match        https://*.office.com/*
+// @match        https://*.microsoft365.com/*
+// @match        https://*.cloud.microsoft/*
 // @match        https://*.microsoftstream.com/*
 // @match        https://teams.microsoft.com/*
+// @match        https://teams.live.com/*
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
@@ -668,7 +671,7 @@
 
     panel = document.createElement("section");
     panel.id = PANEL_ID;
-    panel.hidden = true;
+    panel.hidden = false;
     panel.setAttribute("aria-label", "Teams transcript extractor");
     panel.innerHTML = `
       <div class="tte-actions">
@@ -690,10 +693,9 @@
     const panel = ensurePanel();
     const hasRows = transcriptRowsExist(document);
     const hasTranscriptButton = Boolean(findTranscriptButton(document));
-    const shouldShow = hasRows || hasTranscriptButton || lastMarkdown;
-    const state = hasRows ? "rows" : hasTranscriptButton ? "button" : "hidden";
+    const state = hasRows ? "rows" : hasTranscriptButton ? "button" : "waiting";
 
-    panel.hidden = !shouldShow;
+    panel.hidden = false;
 
     if (state !== lastDetectionState && !lastMarkdown) {
       lastDetectionState = state;
@@ -701,6 +703,8 @@
         setStatus("Transcript detected.");
       } else if (hasTranscriptButton) {
         setStatus("Transcript button detected.");
+      } else {
+        setStatus("Waiting for transcript. Open the transcript panel, then click Extract transcript.");
       }
     }
   }

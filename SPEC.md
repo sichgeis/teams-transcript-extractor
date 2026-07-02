@@ -23,7 +23,7 @@ Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transc
 
 ## Success Criteria
 
-- The floating panel appears only when a transcript row or transcript button is detected.
+- The floating panel appears on supported pages so users can tell the script is running.
 - Clicking `Extract transcript` opens the transcript panel if needed.
 - Extraction reports progress while scrolling.
 - Output contains title, source URL, extraction timestamp, collected count, and transcript rows.

@@ -15,7 +15,7 @@ If Tampermonkey does not open automatically, create a new script in the Tampermo
 ## Use
 
 1. Open a Teams/Stream recording page where you can access the transcript.
-2. If the transcript tab is visible, the userscript shows a small panel in the bottom-right corner.
+2. The userscript shows a small panel in the bottom-right corner when it runs on a supported page.
 3. Click `Extract transcript`.
 4. If the transcript panel is not open yet and the script finds a Transcript button, it opens the panel automatically.
 5. Wait while it scrolls through the virtualized transcript list.
@@ -29,12 +29,16 @@ The userscript currently matches:
 
 - `https://*.sharepoint.com/*`
 - `https://*.office.com/*`
+- `https://*.microsoft365.com/*`
+- `https://*.cloud.microsoft/*`
 - `https://*.microsoftstream.com/*`
 - `https://teams.microsoft.com/*`
+- `https://teams.live.com/*`
 
 ## Limitations
 
 - The transcript DOM must be present in the page or openable through a visible Transcript button.
+- If no panel appears at all, the current page URL is probably not matched by the userscript or Tampermonkey is not running on that site.
 - Teams and Stream use virtualized lists, so extraction can take a little while for long transcripts.
 - If Microsoft changes the transcript DOM shape, selectors may need to be adjusted.
 - Local transcript copies may still be governed by company or meeting policy. Use this only for transcripts you are allowed to access and retain.
