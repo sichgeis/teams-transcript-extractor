@@ -10,7 +10,8 @@ Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transc
 - Scroll the transcript pane to collect virtualized rows.
 - Deduplicate rows by stable row id or ARIA position.
 - Auto-open the transcript panel when a visible Transcript button is available.
-- Copy Markdown to the clipboard and keep a manual copy button after extraction.
+- Copy Markdown to the clipboard and keep manual copy/download buttons after extraction.
+- Download a `.md` file automatically when clipboard access is blocked.
 
 ## Out Of Scope
 
@@ -26,7 +27,7 @@ Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transc
 - Clicking `Extract transcript` opens the transcript panel if needed.
 - Extraction reports progress while scrolling.
 - Output contains title, source URL, extraction timestamp, collected count, and transcript rows.
-- Browser clipboard failures leave a visible `Copy Markdown` retry button.
+- Browser clipboard failures download a `.md` fallback and leave visible retry/download buttons.
 
 ## Known Risks
 

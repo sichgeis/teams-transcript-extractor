@@ -18,6 +18,7 @@
   const PANEL_ID = "tte-panel";
   const BUTTON_ID = "tte-extract-button";
   const COPY_BUTTON_ID = "tte-copy-button";
+  const DOWNLOAD_BUTTON_ID = "tte-download-button";
   const STATUS_ID = "tte-status";
   const STYLE_ID = "tte-style";
   const ROW_TEXT_SELECTOR = '[id^="sub-entry-"]';
@@ -33,6 +34,7 @@
   const IDLE_ROUND_LIMIT = 8;
 
   let lastMarkdown = "";
+  let lastFilename = "";
   let observer = null;
   let detectionTimer = null;
   let lastDetectionState = "idle";
@@ -236,6 +238,10 @@
     const url = normalizeWhitespace(metadata.url);
     const extractedAt = metadata.extractedAt || new Date().toISOString();
     const expectedCount = metadata.expectedCount || null;
+    const warning =
+      expectedCount && sortedRows.length < expectedCount
+        ? `> Note: extracted ${sortedRows.length} rows, but the page reported ${expectedCount} total rows. The page may need slower scrolling, or the transcript pane may not have started at the top.`
+        : null;
 
     const lines = [
       `# ${title}`,
@@ -243,7 +249,9 @@
       url ? `Source: ${url}` : null,
       `Extracted: ${extractedAt}`,
       `Rows: ${sortedRows.length}${expectedCount ? ` / ${expectedCount}` : ""}`,
-      ""
+      "",
+      warning,
+      warning ? "" : null
     ].filter((line) => line !== null);
 
     sortedRows.forEach((row) => {
@@ -265,15 +273,9 @@
     return `${lines.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n`;
   }
 
-  function buildFilename(title, now = new Date()) {
-    const datePart = now.toISOString().slice(0, 10);
-    const safeTitle = normalizeWhitespace(title || "teams-transcript")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 80);
-
-    return `${datePart}-${safeTitle || "teams-transcript"}.md`;
+  function buildFilename(_title, now = new Date()) {
+    const timestamp = now.toISOString().slice(0, 19).replace(/[:T]/g, "-");
+    return `teams-transcript-${timestamp}.md`;
   }
 
   function findTranscriptButton(root) {
@@ -318,40 +320,20 @@
   function findTranscriptScroller(root) {
     const firstRow = root.querySelector(ROW_TEXT_SELECTOR);
     if (!firstRow) {
-      return null;
+      return root.scrollingElement || root.documentElement;
     }
 
-    const candidates = [];
     let current = firstRow.parentElement;
 
     while (current && current !== root.body && current !== root.documentElement) {
-      const rowCount = current.querySelectorAll ? current.querySelectorAll(ROW_TEXT_SELECTOR).length : 0;
-      const hasOverflow = current.scrollHeight > current.clientHeight + 16;
-
-      if (hasOverflow && rowCount > 0) {
-        candidates.push({
-          element: current,
-          rowCount,
-          area: current.clientWidth * current.clientHeight
-        });
+      if (current.scrollHeight > current.clientHeight + 20) {
+        return current;
       }
 
       current = current.parentElement;
     }
 
-    if (!candidates.length) {
-      return null;
-    }
-
-    candidates.sort((left, right) => {
-      if (left.rowCount !== right.rowCount) {
-        return right.rowCount - left.rowCount;
-      }
-
-      return left.area - right.area;
-    });
-
-    return candidates[0].element;
+    return root.scrollingElement || root.documentElement;
   }
 
   function wait(ms = DEFAULT_WAIT_MS) {
@@ -378,6 +360,35 @@
     if (copyButton) {
       copyButton.hidden = !visible;
     }
+  }
+
+  function showDownloadButton(visible) {
+    const downloadButton = document.getElementById(DOWNLOAD_BUTTON_ID);
+    if (downloadButton) {
+      downloadButton.hidden = !visible;
+    }
+  }
+
+  function downloadMarkdown(markdown, title = "teams-transcript") {
+    if (!markdown) {
+      return "";
+    }
+
+    const fileName = buildFilename(title, new Date());
+    const blob = new Blob([markdown], {
+      type: "text/markdown;charset=utf-8"
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+
+    return fileName;
   }
 
   async function copyText(text) {
@@ -535,6 +546,7 @@
   async function handleExtractClick() {
     setBusy(true);
     showCopyButton(false);
+    showDownloadButton(false);
     setStatus("Looking for transcript...");
 
     try {
@@ -548,11 +560,15 @@
       lastMarkdown = result.markdown;
       const copied = await copyText(lastMarkdown);
       showCopyButton(true);
+      showDownloadButton(true);
 
       const total = result.expectedCount ? ` / ${result.expectedCount}` : "";
-      setStatus(copied
-        ? `Copied ${result.rows.length}${total} rows to clipboard.`
-        : `Collected ${result.rows.length}${total} rows. Click Copy Markdown to copy.`);
+      if (copied) {
+        setStatus(`Copied ${result.rows.length}${total} rows to clipboard.`);
+      } else {
+        lastFilename = downloadMarkdown(lastMarkdown, document.title || "teams-transcript");
+        setStatus(`Collected ${result.rows.length}${total} rows. Clipboard failed, downloaded ${lastFilename}.`);
+      }
     } catch (error) {
       setStatus(error && error.message ? error.message : "Extraction failed.");
     } finally {
@@ -563,6 +579,11 @@
   async function handleCopyClick() {
     const copied = await copyText(lastMarkdown);
     setStatus(copied ? "Copied Markdown to clipboard." : "Clipboard copy failed. Try the button again.");
+  }
+
+  function handleDownloadClick() {
+    lastFilename = downloadMarkdown(lastMarkdown, document.title || "teams-transcript");
+    setStatus(lastFilename ? `Downloaded ${lastFilename}.` : "Nothing to download yet.");
   }
 
   function injectStyles() {
@@ -595,6 +616,7 @@
 
       #${PANEL_ID} .tte-actions {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
         align-items: center;
         margin-bottom: 8px;
@@ -651,6 +673,7 @@
       <div class="tte-actions">
         <button id="${BUTTON_ID}" type="button">Extract transcript</button>
         <button id="${COPY_BUTTON_ID}" type="button" data-secondary="true" hidden>Copy Markdown</button>
+        <button id="${DOWNLOAD_BUTTON_ID}" type="button" data-secondary="true" hidden>Download .md</button>
       </div>
       <div id="${STATUS_ID}">Waiting for transcript...</div>
     `;
@@ -658,6 +681,7 @@
     document.body.appendChild(panel);
     document.getElementById(BUTTON_ID).addEventListener("click", handleExtractClick);
     document.getElementById(COPY_BUTTON_ID).addEventListener("click", handleCopyClick);
+    document.getElementById(DOWNLOAD_BUTTON_ID).addEventListener("click", handleDownloadClick);
     return panel;
   }
 
@@ -709,6 +733,7 @@
   const api = {
     buildFilename,
     carryForwardSpeakers,
+    downloadMarkdown,
     extractTrailingNumber,
     formatMarkdown,
     getExpectedCount,

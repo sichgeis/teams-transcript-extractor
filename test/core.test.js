@@ -13,6 +13,13 @@ test("extracts trailing numeric ids", () => {
   assert.equal(extractor.extractTrailingNumber("no-number"), null);
 });
 
+test("builds generic timestamped markdown filenames", () => {
+  assert.equal(
+    extractor.buildFilename("Sensitive Meeting Name", new Date("2026-07-02T12:34:56.000Z")),
+    "teams-transcript-2026-07-02-12-34-56.md"
+  );
+});
+
 test("deduplicates rows by key and keeps richer text", () => {
   const rows = new Map();
   const addedFirst = extractor.upsertRows(rows, [
@@ -58,4 +65,16 @@ test("formats transcript markdown with metadata and carried speakers", () => {
   assert.match(markdown, /Rows: 2 \/ 2/);
   assert.ok(markdown.includes("`00:00:01` **Alex:** Hello \\*team\\*"));
   assert.ok(markdown.includes("**Alex:** Continuation line"));
+});
+
+test("adds a warning when fewer rows are extracted than expected", () => {
+  const markdown = extractor.formatMarkdown([
+    { index: 1, speaker: "Alex", timestamp: "00:00:01", text: "Only row" }
+  ], {
+    title: "Partial Sync",
+    extractedAt: "2026-07-02T12:00:00.000Z",
+    expectedCount: 3
+  });
+
+  assert.match(markdown, /> Note: extracted 1 rows, but the page reported 3 total rows\./);
 });

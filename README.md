@@ -1,6 +1,6 @@
 # Teams Transcript Extractor
 
-Tampermonkey userscript that adds a small `Extract transcript` button to Teams, Stream, SharePoint, and Office recording pages. It extracts transcript rows that are already visible to you in the browser by scrolling the transcript pane, deduplicates virtualized rows, formats Markdown, and copies it to your clipboard.
+Tampermonkey userscript that adds a small `Extract transcript` button to Teams, Stream, SharePoint, and Office recording pages. It extracts transcript rows that are already visible to you in the browser by scrolling the transcript pane, deduplicates virtualized rows, formats Markdown, and copies it to your clipboard. If clipboard access is blocked, it falls back to a local `.md` download.
 
 The script does not call private APIs, inspect cookies, read browser storage, replay network requests, or bypass access controls.
 
@@ -21,7 +21,7 @@ The script does not call private APIs, inspect cookies, read browser storage, re
 5. Wait while it scrolls through the virtualized transcript list.
 6. Paste the copied Markdown wherever you need it.
 
-If automatic clipboard copy is blocked by the browser, click `Copy Markdown` in the panel after extraction completes.
+If automatic clipboard copy is blocked by the browser, the script downloads a `.md` file automatically. After extraction, the panel also keeps `Copy Markdown` and `Download .md` buttons available.
 
 ## Supported Pages
 
