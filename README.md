@@ -28,6 +28,7 @@ If automatic clipboard copy is blocked by the browser, the script downloads a `.
 The userscript currently matches:
 
 - `https://*.sharepoint.com/*`
+- `https://hypatos-my.sharepoint.com/*`
 - `https://*.office.com/*`
 - `https://*.microsoft365.com/*`
 - `https://*.cloud.microsoft/*`

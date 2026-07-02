@@ -1,10 +1,10 @@
-/* global module */
 // ==UserScript==
 // @name         Teams Transcript Extractor
 // @namespace    https://local.codex/teams-transcript-extractor
-// @version      0.1.0
+// @version      0.1.1
 // @description  Extract visible Teams/Stream transcript rows into Markdown and copy them locally.
 // @author       Christian
+// @match        https://hypatos-my.sharepoint.com/*
 // @match        https://*.sharepoint.com/*
 // @match        https://*.office.com/*
 // @match        https://*.microsoft365.com/*
@@ -15,6 +15,8 @@
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
+
+/* global module */
 
 (function () {
   "use strict";
