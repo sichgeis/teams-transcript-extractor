@@ -1,3 +1,4 @@
+/* global module */
 // ==UserScript==
 // @name         Teams Transcript Extractor
 // @namespace    https://local.codex/teams-transcript-extractor
