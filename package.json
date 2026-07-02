@@ -5,6 +5,7 @@
   "description": "Tampermonkey userscript for extracting visible Teams/Stream transcripts to Markdown.",
   "type": "commonjs",
   "scripts": {
+    "lint": "node --check teams-transcript-extractor.user.js",
     "test": "node --test"
   },
   "devDependencies": {}

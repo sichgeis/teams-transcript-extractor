@@ -28,6 +28,7 @@ Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transc
 - Extraction reports progress while scrolling.
 - Output contains title, source URL, extraction timestamp, collected count, and transcript rows.
 - Browser clipboard failures download a `.md` fallback and leave visible retry/download buttons.
+- Downloaded filenames are generic timestamped names and do not include meeting titles.
 
 ## Known Risks
 

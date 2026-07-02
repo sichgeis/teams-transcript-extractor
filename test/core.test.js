@@ -15,7 +15,7 @@ test("extracts trailing numeric ids", () => {
 
 test("builds generic timestamped markdown filenames", () => {
   assert.equal(
-    extractor.buildFilename("Sensitive Meeting Name", new Date("2026-07-02T12:34:56.000Z")),
+    extractor.buildFilename(new Date("2026-07-02T12:34:56.000Z")),
     "teams-transcript-2026-07-02-12-34-56.md"
   );
 });

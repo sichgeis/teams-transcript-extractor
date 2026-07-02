@@ -34,7 +34,6 @@
   const IDLE_ROUND_LIMIT = 8;
 
   let lastMarkdown = "";
-  let lastFilename = "";
   let observer = null;
   let detectionTimer = null;
   let lastDetectionState = "idle";
@@ -141,20 +140,22 @@
       const container = findRowContainer(textElement);
       const index = getRowIndex(textElement, container);
       const position = toFiniteNumber(container && container.getAttribute("aria-posinset"));
+      const speaker = findSpeaker(container, documentLike, index);
+      const timestamp = findTimestamp(container, documentLike, index);
 
       rows.push({
         key: makeRowKey({
           index,
           position,
-          speaker: findSpeaker(container, documentLike, index),
-          timestamp: findTimestamp(container, documentLike, index),
+          speaker,
+          timestamp,
           text
         }, renderedOrder),
         index,
         position,
         renderedOrder,
-        speaker: findSpeaker(container, documentLike, index),
-        timestamp: findTimestamp(container, documentLike, index),
+        speaker,
+        timestamp,
         text
       });
     });
@@ -273,7 +274,7 @@
     return `${lines.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n`;
   }
 
-  function buildFilename(_title, now = new Date()) {
+  function buildFilename(now = new Date()) {
     const timestamp = now.toISOString().slice(0, 19).replace(/[:T]/g, "-");
     return `teams-transcript-${timestamp}.md`;
   }
@@ -369,12 +370,12 @@
     }
   }
 
-  function downloadMarkdown(markdown, title = "teams-transcript") {
+  function downloadMarkdown(markdown) {
     if (!markdown) {
       return "";
     }
 
-    const fileName = buildFilename(title, new Date());
+    const fileName = buildFilename(new Date());
     const blob = new Blob([markdown], {
       type: "text/markdown;charset=utf-8"
     });
@@ -566,8 +567,8 @@
       if (copied) {
         setStatus(`Copied ${result.rows.length}${total} rows to clipboard.`);
       } else {
-        lastFilename = downloadMarkdown(lastMarkdown, document.title || "teams-transcript");
-        setStatus(`Collected ${result.rows.length}${total} rows. Clipboard failed, downloaded ${lastFilename}.`);
+        const fileName = downloadMarkdown(lastMarkdown);
+        setStatus(`Collected ${result.rows.length}${total} rows. Clipboard failed, downloaded ${fileName}.`);
       }
     } catch (error) {
       setStatus(error && error.message ? error.message : "Extraction failed.");
@@ -582,8 +583,8 @@
   }
 
   function handleDownloadClick() {
-    lastFilename = downloadMarkdown(lastMarkdown, document.title || "teams-transcript");
-    setStatus(lastFilename ? `Downloaded ${lastFilename}.` : "Nothing to download yet.");
+    const fileName = downloadMarkdown(lastMarkdown);
+    setStatus(fileName ? `Downloaded ${fileName}.` : "Nothing to download yet.");
   }
 
   function injectStyles() {

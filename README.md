@@ -7,10 +7,10 @@ The script does not call private APIs, inspect cookies, read browser storage, re
 ## Install
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
-2. Open the Tampermonkey dashboard.
-3. Create a new script.
-4. Replace the template with the contents of [`teams-transcript-extractor.user.js`](./teams-transcript-extractor.user.js).
-5. Save the script.
+2. Open the raw userscript URL: [teams-transcript-extractor.user.js](https://raw.githubusercontent.com/sichgeis/teams-transcript-extractor/main/teams-transcript-extractor.user.js).
+3. Tampermonkey should offer to install it. Confirm the installation.
+
+If Tampermonkey does not open automatically, create a new script in the Tampermonkey dashboard and paste in the contents of [`teams-transcript-extractor.user.js`](./teams-transcript-extractor.user.js).
 
 ## Use
 
@@ -45,6 +45,12 @@ Run the focused helper tests with:
 
 ```sh
 npm test
+```
+
+Run the syntax/lint check with:
+
+```sh
+npm run lint
 ```
 
 The installable artifact is the single userscript file:
