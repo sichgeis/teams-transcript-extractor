@@ -1,0 +1,35 @@
+# Teams Transcript Extractor Spec
+
+## Goal
+
+Provide a low-friction Tampermonkey userscript that copies a Teams/Stream transcript to Markdown when the user can already view the transcript in the browser.
+
+## Scope
+
+- Extract only rendered transcript DOM rows.
+- Scroll the transcript pane to collect virtualized rows.
+- Deduplicate rows by stable row id or ARIA position.
+- Auto-open the transcript panel when a visible Transcript button is available.
+- Copy Markdown to the clipboard and keep a manual copy button after extraction.
+
+## Out Of Scope
+
+- Private API calls.
+- Cookie, token, header, local storage, or session storage inspection.
+- Network replay.
+- Access-control bypass.
+- Automatic upload or sync of transcript contents.
+
+## Success Criteria
+
+- The floating panel appears only when a transcript row or transcript button is detected.
+- Clicking `Extract transcript` opens the transcript panel if needed.
+- Extraction reports progress while scrolling.
+- Output contains title, source URL, extraction timestamp, collected count, and transcript rows.
+- Browser clipboard failures leave a visible `Copy Markdown` retry button.
+
+## Known Risks
+
+- Microsoft may change Teams/Stream transcript DOM attributes.
+- Very long transcripts can take time because scrolling waits for virtualized rendering.
+- Managed browser policy may block Tampermonkey or clipboard access.

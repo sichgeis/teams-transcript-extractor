@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Redacted Teams Transcript Fixture</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+      }
+
+      .transcript-pane {
+        width: 420px;
+        height: 220px;
+        overflow: auto;
+        border: 1px solid #ccc;
+        padding: 12px;
+      }
+
+      [role="listitem"] {
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <button aria-label="Transcript">Transcript</button>
+    <main class="transcript-pane">
+      <div id="listItem-1" role="listitem" aria-posinset="1" aria-setsize="4">
+        <div id="itemHeader-1">
+          <span class="itemDisplayName-fixture">Alex Example</span>
+          <span id="Header-timestamp-1">00:00:03</span>
+        </div>
+        <div id="sub-entry-1">Welcome to the project sync.</div>
+      </div>
+      <div id="listItem-2" role="listitem" aria-posinset="2" aria-setsize="4">
+        <div id="sub-entry-2">This continuation row intentionally has no speaker header.</div>
+      </div>
+      <div id="listItem-3" role="listitem" aria-posinset="3" aria-setsize="4">
+        <div id="itemHeader-3">
+          <span class="itemDisplayName-fixture">Sam Example</span>
+          <span id="Header-timestamp-3">00:00:12</span>
+        </div>
+        <div id="sub-entry-3">The next action is to test the userscript.</div>
+      </div>
+      <div id="listItem-4" role="listitem" aria-posinset="4" aria-setsize="4">
+        <div id="sub-entry-4">Recording stopped.</div>
+      </div>
+    </main>
+  </body>
+</html>
