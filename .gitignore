@@ -1,0 +1,7 @@
+node_modules/
+transcript.md
+outputs/
+.chrome-debug-profile/
+.playwright-profile/
+playwright-report/
+test-results/

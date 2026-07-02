@@ -1,0 +1,52 @@
+version: "3"
+
+vars:
+  CDP_URL: '{{default "http://127.0.0.1:9222" .CDP_URL}}'
+  OUT: '{{default "transcript.md" .OUT}}'
+  DELAY_MS: '{{default "500" .DELAY_MS}}'
+  MAX_IDLE_ROUNDS: '{{default "8" .MAX_IDLE_ROUNDS}}'
+
+tasks:
+  chrome:debug:
+    desc: Start default Google Chrome with a DevTools port for transcript extraction
+    cmds:
+      - node ./scripts/start-debug-chrome.js
+
+  chrome:debug:restart:
+    desc: Quit and restart default Google Chrome with a DevTools port
+    cmds:
+      - node ./scripts/start-debug-chrome.js --quit-first
+
+  chrome:debug:isolated:
+    desc: Start an isolated Google Chrome profile with a DevTools port
+    cmds:
+      - node ./scripts/start-debug-chrome.js --isolated
+        --user-data-dir="{{.TASKFILE_DIR}}/.chrome-debug-profile"
+
+  extract:
+    desc: Extract a Teams/Stream transcript from a URL opened in debug Chrome
+    requires:
+      vars: [URL]
+    cmds:
+      - >-
+        npm run extract --
+        --url "{{.URL}}"
+        --out "{{.OUT}}"
+        --cdp-url "{{.CDP_URL}}"
+        --delay-ms "{{.DELAY_MS}}"
+        --max-idle-rounds "{{.MAX_IDLE_ROUNDS}}"
+
+  extract:current:
+    desc: Extract from the current debug Chrome tab
+    cmds:
+      - >-
+        npm run extract --
+        --out "{{.OUT}}"
+        --cdp-url "{{.CDP_URL}}"
+        --delay-ms "{{.DELAY_MS}}"
+        --max-idle-rounds "{{.MAX_IDLE_ROUNDS}}"
+
+  test:
+    desc: Run executable specs
+    cmds:
+      - npm test

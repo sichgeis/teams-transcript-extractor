@@ -1,0 +1,17 @@
+{
+  "name": "teams-transcript-extractor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "teams-transcript-extractor": "./src/cli.js"
+  },
+  "scripts": {
+    "extract": "node ./src/cli.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "playwright": "^1.53.2"
+  },
+  "devDependencies": {}
+}
